@@ -1,26 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'Satoshi', sans-serif;
+  --font-heading: 'Cabinet Grotesk', sans-serif;
+  --font-body: 'Satoshi', sans-serif;
+
+  /* Neo-Brutalist Palette */
+  --color-yellow: #F0F0F0;
+  --color-charcoal: #171e19;
+  --color-sage: #b7c6c2;
+  --color-black: #000000;
+  --color-white: #ffffff;
+
+  /* Legacy HeyDrew Colors (kept for compatibility) */
+  --color-green-light: #9BEB99;
+  --color-green-primary: #4CD964;
+  --color-green-dark: #03A500;
+  --color-teal-light: #E8F7F5;
+  --color-teal-primary: #5BBFB3;
+  --color-teal-dark: #3A9D8F;
+  --color-purple-light: #F0E6FF;
+  --color-purple-primary: #9B7ED9;
+  --color-purple-dark: #7B5DC4;
+  --color-gold-light: #FFF4E0;
+  --color-gold-primary: #F5A623;
+  --color-gold-dark: #E09000;
+  --color-blue-light: #E2F2FF;
+  --color-blue-primary: #2196F3;
+  --color-blue-dark: #0070C8;
+  --color-red-light: #FFF4F4;
+  --color-red-primary: #FF6B6B;
+  --color-red-dark: #FF2E2E;
+  --color-gray-100: #F8F9FA;
+  --color-gray-200: #E9ECEF;
+  --color-gray-300: #DEE2E6;
+  --color-gray-400: #CED4DA;
+  --color-gray-500: #ADB5BD;
+  --color-gray-600: #6C757D;
+  --color-gray-700: #495057;
+  --color-gray-800: #343A40;
+
+  /* Hard Shadows */
+  --shadow-brutal-sm: 4px 4px 0px 0px #000000;
+  --shadow-brutal-md: 6px 6px 0px 0px #000000;
+  --shadow-brutal-lg: 8px 8px 0px 0px #000000;
+  --shadow-brutal-xl: 12px 12px 0px 0px #000000;
+
+  /* Radius */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-full: 9999px;
+
+  /* shadcn compatibility */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #F0F0F0;
+  --foreground: #000000;
+  --card: #FFFFFF;
+  --card-foreground: #000000;
+  --popover: #FFFFFF;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #FFFFFF;
+  --secondary: #b7c6c2;
+  --secondary-foreground: #000000;
+  --muted: #b7c6c2;
+  --muted-foreground: #171e19;
+  --accent: #F0F0F0;
+  --accent-foreground: #000000;
+  --destructive: #FF6B6B;
+  --border: #000000;
+  --input: #000000;
+  --ring: #000000;
+  --radius: 12px;
+
+  /* Backward-compat aliases for inline styles in new pages */
+  --black: #000000;
+  --white: #FFFFFF;
+  --gray-50: #FAFAFA;
+  --gray-100: #F8F9FA;
+  --gray-200: #E9ECEF;
+  --gray-300: #DEE2E6;
+  --gray-400: #888888;
+  --gray-500: #6C757D;
+  --gray-600: #495057;
+  --gray-700: #495057;
+  --gray-800: #343A40;
+  --gray-900: #212529;
+}
+
+@layer base {
+  * {
+    @apply border-transparent outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-body;
+  }
+  input[type="date"],
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    color-scheme: light;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Neo-Brutalist push button */
+.btn-brutal {
+  border: 2px solid #000;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px 0px #000;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-brutal:hover {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+.btn-brutal:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+.btn-brutal-lg {
+  border: 2px solid #000;
+  border-radius: 12px;
+  box-shadow: 8px 8px 0px 0px #000;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-brutal-lg:hover {
+  transform: translate(4px, 4px);
+  box-shadow: 4px 4px 0px 0px #000;
+}
+.btn-brutal-lg:active {
+  transform: translate(8px, 8px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+/* Card styles */
+.card-brutal {
+  border: 2px solid #000;
+  border-radius: 12px;
+  box-shadow: 4px 4px 0px 0px #000;
+}
+.card-brutal-lg {
+  border: 2px solid #000;
+  border-radius: 12px;
+  box-shadow: 8px 8px 0px 0px #000;
+}
+
+/* Dot pattern for yellow backgrounds */
+.dot-pattern {
+  background-image: radial-gradient(circle, #000 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.06;
+}
+
+/* ==============================================
+   New Pages Design System (non-Augusta pages)
+   Uses the same brutalist palette but with
+   sharper corners for form elements
+   ============================================== */
+
+/* Buttons for new pages */
+.btn-primary {
+  width: 100%;
+  padding: 16px 32px;
+  border-radius: 12px;
+  border: 2px solid #000;
+  background: #000;
+  color: #fff;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 4px 4px 0px 0px #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+.btn-primary:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+.btn-primary:disabled {
+  background: #DEE2E6;
+  border-color: #CED4DA;
+  color: #ADB5BD;
+  box-shadow: 2px 2px 0px #CED4DA;
+  cursor: not-allowed;
+}
+
+.btn-primary:disabled:hover {
+  transform: none;
+  box-shadow: 2px 2px 0px #CED4DA;
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 14px 32px;
+  border-radius: 12px;
+  border: 2px solid #000;
+  background: #fff;
+  color: #000;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 4px 4px 0px 0px #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.btn-secondary:hover {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+.btn-secondary:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px 0px #000;
+}
+
+/* Input Fields */
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid #000;
+  background: #fff;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 16px;
+  color: #000;
+  transition: box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input-field:focus {
+  box-shadow: 4px 4px 0px 0px #000;
+}
+
+.input-field::placeholder {
+  color: #CED4DA;
+}
+
+.input-field.error {
+  border-color: #000;
+  background: #F8F9FA;
+  box-shadow: 4px 4px 0px #6C757D;
+}
+
+.input-field:read-only {
+  background: #F8F9FA;
+  color: #ADB5BD;
+  cursor: not-allowed;
+}
+
+/* Select Fields */
+.select-field {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 2px solid #000;
+  background: #fff;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 16px;
+  color: #000;
+  transition: box-shadow 0.2s ease;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 48px;
+}
+
+.select-field:focus {
+  box-shadow: 4px 4px 0px 0px #000;
+}
+
+/* Input group */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  display: block;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease;
 }
