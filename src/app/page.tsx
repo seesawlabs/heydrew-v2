@@ -12,12 +12,6 @@ export default function Home() {
 
       {/* Hero */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 text-center relative z-10">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border-2 border-black rounded-full mb-8 card-brutal">
-          <span className="w-2.5 h-2.5 bg-green-primary rounded-full" />
-          <span className="font-body text-sm font-medium">Augusta Rule Tax Strategy</span>
-        </div>
-
         {/* Logo / Title */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
