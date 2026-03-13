@@ -183,8 +183,8 @@ export function EventPlannerForm({
                   type="number"
                   min={1}
                   max={maxDaysForEvent(event)}
-                  value={event.days}
-                  onChange={(e) => updateEvent(event.id, "days", Math.max(1, Number(e.target.value)))}
+                  value={event.days || ""}
+                  onChange={(e) => updateEvent(event.id, "days", e.target.value === "" ? 0 : Math.max(0, Number(e.target.value)))}
                   disabled={disabled}
                   className="w-full px-3 py-2.5 min-h-[44px] bg-yellow border-2 border-black rounded-xl
                     text-body-sm text-black

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import type { GeneratedDocument } from "../lib/documents/generateAll";
 import { downloadBlob, downloadAllAsZip } from "../lib/documents/generateAll";
 
@@ -24,6 +25,7 @@ interface DocumentPackageCardProps {
 }
 
 export function DocumentPackageCard({ documents }: DocumentPackageCardProps) {
+  const router = useRouter();
   const [driveState, setDriveState] = useState<DriveState>({ status: "idle" });
 
   const handleUpload = useCallback(async () => {
@@ -209,6 +211,16 @@ export function DocumentPackageCard({ documents }: DocumentPackageCardProps) {
 
         {/* Google Drive */}
         {renderDriveButton()}
+
+        {/* All set — return to dashboard */}
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="w-full py-3 min-h-[44px] bg-white text-black border-2 border-black rounded-xl
+            font-body text-body-lg font-semibold
+            btn-brutal flex items-center justify-center gap-2 mt-2"
+        >
+          All set &mdash; back to Dashboard
+        </button>
       </div>
     </div>
   );
