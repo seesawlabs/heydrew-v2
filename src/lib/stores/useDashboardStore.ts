@@ -19,6 +19,7 @@ interface DashboardState {
   setAugustaCompleted: (savings: number, dailyRate: number, days: number) => void;
   toggleChecklist: (key: "checklistPaidSelf" | "checklistAccountingUpdated") => void;
   setUploadStatus: (docId: string, status: UploadStatus) => void;
+  removeUpload: (docId: string) => void;
   reset: () => void;
   _hasHydrated: boolean;
   setHasHydrated: (v: boolean) => void;
@@ -49,6 +50,11 @@ export const useDashboardStore = create<DashboardState>()(
         set((state) => ({
           uploads: { ...state.uploads, [docId]: status },
         })),
+      removeUpload: (docId) =>
+        set((state) => {
+          const { [docId]: _, ...rest } = state.uploads;
+          return { uploads: rest };
+        }),
       reset: () =>
         set({
           augustaCompleted: false,

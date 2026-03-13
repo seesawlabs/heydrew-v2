@@ -1,24 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboardStore, useTaxUploadUnlocked } from "@/lib/stores/useDashboardStore";
 import { FileUploadCard } from "@/components/ui/file-upload-card";
 
 const TAX_DOCUMENTS = [
-  { id: "1040", label: "Form 1040" },
-  { id: "schedule-c", label: "Schedule C" },
+  { id: "1040", label: "Tax Return" },
+  { id: "schedule-c", label: "Business P&L" },
   { id: "w2", label: "W-2" },
   { id: "1099-nec", label: "1099-NEC" },
-  { id: "1099-int", label: "1099-INT" },
-  { id: "expense-report", label: "Expense Report" },
-  { id: "1099-div", label: "1099-DIV" },
-  { id: "1098", label: "1098" },
-  { id: "schedule-e", label: "Schedule E" },
-  { id: "1040-es", label: "1040-ES" },
+  { id: "expense-report", label: "Expenses" },
+  { id: "1098", label: "Mortgage Statement" },
 ];
 
-const PROGRESS_STEPS = ["Uploaded", "In Review", "Approved", "Filing"];
+const PROGRESS_STEPS = ["Uploaded", "Ready for Review", "Filed"];
 
 function formatMoney(n: number) {
   return "$" + n.toLocaleString("en-US");
@@ -27,7 +23,7 @@ function formatMoney(n: number) {
 export default function TaxesPage() {
   const router = useRouter();
   const taxUploadUnlocked = useTaxUploadUnlocked();
-  const { uploads, setUploadStatus, augustaSavings } = useDashboardStore();
+  const { uploads, setUploadStatus, removeUpload, augustaSavings } = useDashboardStore();
 
   useEffect(() => {
     if (!taxUploadUnlocked) {
@@ -35,10 +31,14 @@ export default function TaxesPage() {
     }
   }, [taxUploadUnlocked, router]);
 
+  const [processing, setProcessing] = useState(false);
+  const [processingDone, setProcessingDone] = useState(false);
+
   if (!taxUploadUnlocked) return null;
 
   const uploadedCount = Object.keys(uploads).length;
-  const currentStep = uploadedCount === 0 ? 0 : uploadedCount >= TAX_DOCUMENTS.length ? 2 : 1;
+  const allUploaded = uploadedCount >= TAX_DOCUMENTS.length;
+  const currentStep = processingDone ? 1 : processing ? 1 : uploadedCount > 0 ? 0 : -1;
 
   const totalIncome = 185000;
   const businessExpenses = 42000;
@@ -114,30 +114,105 @@ export default function TaxesPage() {
         </div>
 
         {/* Source Documents */}
-        <div style={{ marginBottom: 32 }}>
+        <div style={{ marginBottom: 32, position: "relative" }}>
           <h3 style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
             Source Documents
           </h3>
-          <div style={{ border: "3px solid var(--black)", borderRadius: 12 }}>
-            {TAX_DOCUMENTS.map((doc) => {
-              const upload = uploads[doc.id];
-              return (
+          <div style={{ border: "3px solid var(--black)", borderRadius: 12, position: "relative" }}>
+            {processing && (
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                background: "rgba(0,0,0,0.85)",
+                borderRadius: 10,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 10,
+                gap: 12,
+              }}>
+                <div style={{
+                  width: 32,
+                  height: 32,
+                  border: "3px solid var(--gray-600)",
+                  borderTop: "3px solid var(--white)",
+                  borderRadius: "50%",
+                  animation: "spin 0.8s linear infinite",
+                }} />
+                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 14, fontWeight: 700, color: "var(--white)", textTransform: "uppercase", letterSpacing: 1 }}>
+                  DocSumo magic happening...
+                </p>
+              </div>
+            )}
+            {TAX_DOCUMENTS.map((doc) => (
                 <FileUploadCard
                   key={doc.id}
                   label={doc.label}
-                  status={upload?.status || "missing"}
-                  fileName={upload?.fileName}
-                  onUpload={(file) =>
-                    setUploadStatus(doc.id, { status: "uploaded", fileName: file.name })
-                  }
+                  uploaded={!!uploads[doc.id]}
+                  onUpload={() => {
+                    if (uploads[doc.id]) {
+                      removeUpload(doc.id);
+                      setProcessingDone(false);
+                    } else {
+                      setUploadStatus(doc.id, { status: "uploaded", fileName: doc.label });
+                    }
+                  }}
                 />
-              );
-            })}
+            ))}
           </div>
+
+          {/* Extra upload options */}
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <button
+              className="btn-secondary"
+              style={{ flex: 1, padding: "10px 16px", fontSize: 11 }}
+              onClick={() => {/* no-op for demo */}}
+            >
+              Bulk Upload
+            </button>
+            <button
+              className="btn-secondary"
+              style={{ flex: 1, padding: "10px 16px", fontSize: 11 }}
+              onClick={() => {/* no-op for demo */}}
+            >
+              Upload Other Doc
+            </button>
+          </div>
+
+          {/* Submit button — triggers DocSumo */}
+          {!processingDone && uploadedCount > 0 && (
+            <button
+              className="btn-primary"
+              style={{ marginTop: 12 }}
+              onClick={() => {
+                setProcessing(true);
+                setTimeout(() => {
+                  setProcessing(false);
+                  setProcessingDone(true);
+                }, 3000);
+              }}
+            >
+              Submit for Review
+            </button>
+          )}
         </div>
 
-        {/* Tax Summary */}
-        <div style={{ marginBottom: 40 }}>
+        {/* Secret admin link */}
+        {processingDone && (
+          <p style={{ textAlign: "center", marginBottom: 24 }}>
+            <a
+              href="/admin"
+              target="_blank"
+              style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 11, color: "var(--gray-400)", textDecoration: "underline", cursor: "pointer" }}
+            >
+              (secret admin view)
+            </a>
+          </p>
+        )}
+
+        {/* Tax Summary — only after processing completes */}
+        {processingDone && <div style={{ marginBottom: 40 }}>
           <h3 style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
             Tax Summary (Draft)
           </h3>
@@ -170,7 +245,7 @@ export default function TaxesPage() {
               </p>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );

@@ -79,22 +79,6 @@ export default function SignupPage() {
       >
         <div style={{ width: "100%", maxWidth: 440 }}>
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div
-              style={{
-                display: "inline-block",
-                border: "3px solid var(--black)",
-                borderRadius: 12,
-                padding: "6px 16px",
-                fontFamily: "'Cabinet Grotesk', sans-serif",
-                fontSize: 11,
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: 2,
-                marginBottom: 24,
-              }}
-            >
-              Invite only
-            </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/heydrew-logo.svg"
@@ -197,12 +181,16 @@ export default function SignupPage() {
         padding: "40px 32px",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 440 }}>
+      <div style={{ width: "100%", maxWidth: 440, position: "relative" }}>
+        {/* Back button — positioned to not shift the centered logo */}
         <button
           onClick={() => setScreen("token")}
           style={{
-            width: 44,
-            height: 44,
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: 40,
+            height: 40,
             border: "3px solid var(--black)",
             borderRadius: 12,
             background: "var(--white)",
@@ -210,11 +198,9 @@ export default function SignupPage() {
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            marginBottom: 32,
-            boxShadow: "2px 2px 0px var(--black)",
           }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--black)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--black)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </button>

@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/lib/stores/useProfileStore";
 import { useDashboardStore, useTaxUploadUnlocked } from "@/lib/stores/useDashboardStore";
-import { useAuthStore } from "@/lib/stores/useAuthStore";
 import { CheckboxBrutal } from "@/components/ui/checkbox-brutal";
 
 function formatMoney(n: number) {
@@ -13,7 +12,6 @@ function formatMoney(n: number) {
 export default function DashboardPage() {
   const router = useRouter();
   const { business, personal } = useProfileStore();
-  const logout = useAuthStore((s) => s.logout);
   const {
     augustaCompleted,
     augustaSavings,
@@ -121,7 +119,7 @@ export default function DashboardPage() {
         </h1>
 
         {/* Business Card */}
-        <div style={{ border: "2px solid var(--black)", borderRadius: 12, boxShadow: "4px 4px 0px var(--black)", marginBottom: 20 }}>
+        <div style={{ border: "2px solid var(--black)", borderRadius: 12, boxShadow: "4px 4px 0px var(--black)", marginBottom: 24 }}>
           <div style={{ background: "var(--black)", padding: "12px 16px", borderRadius: "10px 10px 0 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: "var(--white)" }}>
               {business.name}
@@ -137,197 +135,179 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Stats Row — only show when there are results */}
-        {augustaCompleted && (
-          <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
-            <div style={{ flex: 1, border: "2px solid var(--black)", borderRadius: 12, padding: "14px 16px", textAlign: "center", background: "var(--white)" }}>
-              <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-                Strategies
-              </p>
-              <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 28, fontWeight: 700 }}>
-                1
-              </p>
-            </div>
-            <div style={{ flex: 1, border: "2px solid var(--black)", borderRadius: 12, padding: "14px 16px", textAlign: "center", background: "var(--white)" }}>
-              <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-                Savings
-              </p>
-              <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 28, fontWeight: 700 }}>
-                {formatMoney(augustaSavings)}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Chat with Drew CTA */}
+        {/* ===================== PRE-AUGUSTA STATE ===================== */}
         {!augustaCompleted && (
           <div
             style={{
               border: "2px solid var(--black)",
               borderRadius: 12,
               boxShadow: "4px 4px 0px var(--black)",
-              padding: 20,
-              marginBottom: 24,
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
               background: "var(--white)",
+              overflow: "hidden",
+              marginBottom: 24,
             }}
           >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                border: "2px solid var(--black)",
-                borderRadius: 12,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontFamily: "'Cabinet Grotesk', sans-serif",
-                fontSize: 24,
-                fontWeight: 700,
-                flexShrink: 0,
-              }}
-            >
-              $
+            {/* Qualification header */}
+            <div style={{ padding: "16px 20px", borderBottom: "2px solid var(--black)", background: "var(--background)" }}>
+              <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "var(--gray-500)", marginBottom: 4 }}>
+                Based on your business profile
+              </p>
+              <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 15, fontWeight: 700 }}>
+                You likely qualify for a tax strategy
+              </p>
             </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 14, fontWeight: 700, marginBottom: 4, textTransform: "uppercase" }}>
-                Hey {firstName}!
+
+            {/* Augusta Rule card */}
+            <div style={{ padding: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                <div style={{
+                  width: 40,
+                  height: 40,
+                  border: "2px solid var(--black)",
+                  borderRadius: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: "'Cabinet Grotesk', sans-serif",
+                  fontSize: 18,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                }}>
+                  A
+                </div>
+                <div>
+                  <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 16, fontWeight: 700, textTransform: "uppercase" }}>
+                    The Augusta Rule
+                  </p>
+                  <p style={{ fontSize: 13, color: "var(--gray-500)" }}>
+                    Section 280A(g) of the tax code
+                  </p>
+                </div>
+              </div>
+
+              <p style={{ fontSize: 14, color: "var(--gray-600)", lineHeight: 1.6, marginBottom: 16 }}>
+                Rent your personal home to {business.type === "Sole proprietorship" ? "your business" : business.name} for
+                meetings and events — up to 14 days per year, tax-free. Drew will walk you through it and generate
+                all the compliance docs you need.
               </p>
-              <p style={{ fontSize: 13, color: "var(--gray-600)", marginBottom: 12 }}>
-                Answer a few questions and I&apos;ll find tax strategies for your business.
-              </p>
+
               <button
                 onClick={() => router.push("/augusta")}
                 className="btn-brutal"
                 style={{
-                  padding: "8px 20px",
+                  width: "100%",
+                  padding: "14px 20px",
                   background: "var(--black)",
                   color: "var(--white)",
                   fontFamily: "'Cabinet Grotesk', sans-serif",
-                  fontSize: 11,
+                  fontSize: 13,
                   fontWeight: 700,
                   cursor: "pointer",
                   textTransform: "uppercase",
                   letterSpacing: 1,
                 }}
               >
-                Chat with Drew
+                Chat with Drew &rarr;
               </button>
             </div>
           </div>
         )}
 
-        {/* Strategies List */}
-        <div style={{ marginBottom: 24 }}>
-          <h3 style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
-            Tax Strategies
-          </h3>
-
-          {/* Augusta Rule */}
-          <div
-            style={{
-              border: "2px solid var(--black)",
-              borderRadius: 12,
-              padding: "12px 14px",
-              marginBottom: 8,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              cursor: "pointer",
-              background: "var(--white)",
-            }}
-            onClick={() => router.push("/augusta")}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 32, height: 32, border: "2px solid var(--black)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 14, fontWeight: 700 }}>
-                A
-              </div>
-              <div>
-                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 13, fontWeight: 700, textTransform: "uppercase" }}>
-                  Augusta Rule
+        {/* ===================== POST-AUGUSTA STATE ===================== */}
+        {augustaCompleted && (
+          <>
+            {/* Stats Row */}
+            <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+              <div style={{ flex: 1, border: "2px solid var(--black)", borderRadius: 12, padding: "14px 16px", textAlign: "center", background: "var(--white)" }}>
+                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                  Strategies
                 </p>
-                <p style={{ fontSize: 12, color: "var(--gray-500)" }}>
-                  {augustaCompleted ? `Saving ${formatMoney(augustaSavings)}/yr` : "Rent your home to your business"}
+                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 28, fontWeight: 700 }}>
+                  1
+                </p>
+              </div>
+              <div style={{ flex: 1, border: "2px solid var(--black)", borderRadius: 12, padding: "14px 16px", textAlign: "center", background: "var(--white)" }}>
+                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                  Savings
+                </p>
+                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 28, fontWeight: 700 }}>
+                  {formatMoney(augustaSavings)}
                 </p>
               </div>
             </div>
-            <span style={{
-              fontFamily: "'Cabinet Grotesk', sans-serif",
-              fontSize: 10,
-              fontWeight: 700,
-              padding: "3px 10px",
-              border: "2px solid var(--black)",
-              borderRadius: 8,
-              background: augustaCompleted ? "var(--black)" : "var(--white)",
-              color: augustaCompleted ? "var(--white)" : "var(--black)",
-              textTransform: "uppercase",
-              letterSpacing: 1,
-            }}>
-              {augustaCompleted ? "Done" : "Start"}
-            </span>
-          </div>
 
-          {/* Placeholder strategies */}
-          {["SEP-IRA", "Home Office", "Health Insurance"].map((name) => (
+            {/* Augusta Rule — completed */}
             <div
-              key={name}
               style={{
-                border: "2px solid var(--gray-300)",
+                border: "2px solid var(--black)",
                 borderRadius: 12,
                 padding: "12px 14px",
-                marginBottom: 8,
+                marginBottom: 24,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                opacity: 0.5,
+                cursor: "pointer",
+                background: "var(--white)",
               }}
+              onClick={() => router.push("/augusta")}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 32, height: 32, border: "2px solid var(--gray-300)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 14, color: "var(--gray-400)" }}>
-                  ?
+                <div style={{ width: 32, height: 32, border: "2px solid var(--black)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 14, fontWeight: 700 }}>
+                  A
                 </div>
                 <div>
-                  <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 13, fontWeight: 700, textTransform: "uppercase" }}>{name}</p>
-                  <p style={{ fontSize: 12, color: "var(--gray-400)" }}>Coming soon</p>
+                  <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 13, fontWeight: 700, textTransform: "uppercase" }}>
+                    Augusta Rule
+                  </p>
+                  <p style={{ fontSize: 12, color: "var(--gray-500)" }}>
+                    Saving {formatMoney(augustaSavings)}/yr
+                  </p>
                 </div>
               </div>
-              <span style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, fontWeight: 700, padding: "3px 10px", border: "2px solid var(--gray-300)", borderRadius: 8, color: "var(--gray-400)", textTransform: "uppercase", letterSpacing: 1 }}>
-                Locked
+              <span style={{
+                fontFamily: "'Cabinet Grotesk', sans-serif",
+                fontSize: 10,
+                fontWeight: 700,
+                padding: "3px 10px",
+                border: "2px solid var(--black)",
+                borderRadius: 8,
+                background: "var(--black)",
+                color: "var(--white)",
+                textTransform: "uppercase",
+                letterSpacing: 1,
+              }}>
+                Done
               </span>
             </div>
-          ))}
-        </div>
 
-        {/* Post-Augusta Checklist */}
-        {augustaCompleted && (
-          <div style={{ marginBottom: 40 }}>
-            <h3 style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
-              Next Steps
-            </h3>
-            <div style={{ border: "2px solid var(--black)", borderRadius: 12, padding: "4px 16px", background: "var(--white)" }}>
-              <CheckboxBrutal
-                checked={checklistPaidSelf}
-                onChange={() => toggleChecklist("checklistPaidSelf")}
-                label={`I've paid myself ${formatMoney(augustaSavings)}`}
-              />
-              <div style={{ height: 2, background: "var(--black)" }} />
-              <CheckboxBrutal
-                checked={checklistAccountingUpdated}
-                onChange={() => toggleChecklist("checklistAccountingUpdated")}
-                label="My accounting records are up to date"
-              />
-            </div>
-
-            {taxUploadUnlocked && (
-              <div style={{ marginTop: 16 }}>
-                <button className="btn-primary" onClick={() => router.push("/taxes")}>
-                  Upload Tax Documents
-                </button>
+            {/* Next Steps Checklist */}
+            <div style={{ marginBottom: 40 }}>
+              <h3 style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>
+                Next Steps
+              </h3>
+              <div style={{ border: "2px solid var(--black)", borderRadius: 12, padding: "4px 16px", background: "var(--white)" }}>
+                <CheckboxBrutal
+                  checked={checklistPaidSelf}
+                  onChange={() => toggleChecklist("checklistPaidSelf")}
+                  label={`I've paid myself ${formatMoney(augustaSavings)}`}
+                />
+                <div style={{ height: 2, background: "var(--black)" }} />
+                <CheckboxBrutal
+                  checked={checklistAccountingUpdated}
+                  onChange={() => toggleChecklist("checklistAccountingUpdated")}
+                  label="My accounting records are up to date"
+                />
               </div>
-            )}
-          </div>
+
+              {taxUploadUnlocked && (
+                <div style={{ marginTop: 16 }}>
+                  <button className="btn-primary" onClick={() => router.push("/taxes")}>
+                    Upload Tax Documents
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>
