@@ -208,7 +208,7 @@ export default function DashboardPage() {
                   letterSpacing: 1,
                 }}
               >
-                Chat with Drew &rarr;
+                Let&apos;s Go! &rarr;
               </button>
             </div>
           </div>
