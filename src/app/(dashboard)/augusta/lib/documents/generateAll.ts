@@ -62,14 +62,20 @@ export function downloadBlob(blob: Blob, filename: string) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  // Delay revoke — Chrome mobile needs time to start the download
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
 export async function downloadAllAsZip(docs: GeneratedDocument[]) {
-  const zip = new JSZip();
-  for (const doc of docs) {
-    zip.file(doc.filename, doc.blob);
+  try {
+    const zip = new JSZip();
+    for (const doc of docs) {
+      zip.file(doc.filename, doc.blob);
+    }
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+    downloadBlob(zipBlob, "augusta-rule-documents.zip");
+  } catch (e) {
+    console.error("ZIP download failed:", e);
+    alert("Download failed. Please try downloading individual files instead.");
   }
-  const zipBlob = await zip.generateAsync({ type: "blob" });
-  downloadBlob(zipBlob, "augusta-rule-documents.zip");
 }
