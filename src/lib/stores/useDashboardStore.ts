@@ -16,10 +16,12 @@ interface DashboardState {
   checklistPaidSelf: boolean;
   checklistAccountingUpdated: boolean;
   uploads: Record<string, UploadStatus>;
+  caseNumber: string | null;
   setAugustaCompleted: (savings: number, dailyRate: number, days: number) => void;
   toggleChecklist: (key: "checklistPaidSelf" | "checklistAccountingUpdated") => void;
   setUploadStatus: (docId: string, status: UploadStatus) => void;
   removeUpload: (docId: string) => void;
+  setCaseNumber: (caseNumber: string) => void;
   reset: () => void;
   _hasHydrated: boolean;
   setHasHydrated: (v: boolean) => void;
@@ -35,6 +37,7 @@ export const useDashboardStore = create<DashboardState>()(
       checklistPaidSelf: false,
       checklistAccountingUpdated: false,
       uploads: {},
+      caseNumber: null,
       _hasHydrated: false,
       setHasHydrated: (v) => set({ _hasHydrated: v }),
       setAugustaCompleted: (savings, dailyRate, days) =>
@@ -55,6 +58,7 @@ export const useDashboardStore = create<DashboardState>()(
           const { [docId]: _, ...rest } = state.uploads;
           return { uploads: rest };
         }),
+      setCaseNumber: (caseNumber) => set({ caseNumber }),
       reset: () =>
         set({
           augustaCompleted: false,
@@ -64,6 +68,7 @@ export const useDashboardStore = create<DashboardState>()(
           checklistPaidSelf: false,
           checklistAccountingUpdated: false,
           uploads: {},
+          caseNumber: null,
         }),
     }),
     {

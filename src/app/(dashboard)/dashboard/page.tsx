@@ -18,6 +18,7 @@ export default function DashboardPage() {
     checklistPaidSelf,
     checklistAccountingUpdated,
     toggleChecklist,
+    caseNumber,
   } = useDashboardStore();
   const taxUploadUnlocked = useTaxUploadUnlocked();
 
@@ -299,7 +300,7 @@ export default function DashboardPage() {
                 />
               </div>
 
-              {taxUploadUnlocked && (
+              {taxUploadUnlocked && !caseNumber && (
                 <div style={{ marginTop: 16 }}>
                   <button className="btn-primary" onClick={() => router.push("/taxes")}>
                     Upload Tax Documents
@@ -307,6 +308,29 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+
+            {/* Case number card */}
+            {caseNumber && (
+              <div
+                style={{
+                  border: "2px solid var(--black)",
+                  borderRadius: 12,
+                  boxShadow: "4px 4px 0px var(--black)",
+                  padding: "16px 20px",
+                  background: "var(--black)",
+                  textAlign: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => router.push("/taxes")}
+              >
+                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, fontWeight: 700, color: "var(--gray-400)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                  All set! Your case number
+                </p>
+                <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 24, fontWeight: 700, color: "var(--white)", letterSpacing: 2 }}>
+                  {caseNumber}
+                </p>
+              </div>
+            )}
           </>
         )}
       </div>

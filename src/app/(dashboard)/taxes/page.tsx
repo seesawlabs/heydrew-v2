@@ -23,7 +23,7 @@ function formatMoney(n: number) {
 export default function TaxesPage() {
   const router = useRouter();
   const taxUploadUnlocked = useTaxUploadUnlocked();
-  const { uploads, setUploadStatus, removeUpload, augustaSavings } = useDashboardStore();
+  const { uploads, setUploadStatus, removeUpload, augustaSavings, caseNumber, setCaseNumber } = useDashboardStore();
 
   useEffect(() => {
     if (!taxUploadUnlocked) {
@@ -32,7 +32,7 @@ export default function TaxesPage() {
   }, [taxUploadUnlocked, router]);
 
   const [processing, setProcessing] = useState(false);
-  const [processingDone, setProcessingDone] = useState(false);
+  const [processingDone, setProcessingDone] = useState(!!caseNumber);
 
   if (!taxUploadUnlocked) return null;
 
@@ -190,6 +190,10 @@ export default function TaxesPage() {
                 setTimeout(() => {
                   setProcessing(false);
                   setProcessingDone(true);
+                  if (!caseNumber) {
+                    const id = "HD-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+                    setCaseNumber(id);
+                  }
                 }, 3000);
               }}
             >
@@ -209,6 +213,26 @@ export default function TaxesPage() {
               (secret admin view)
             </a>
           </p>
+        )}
+
+        {/* Case number card */}
+        {processingDone && caseNumber && (
+          <div style={{
+            border: "2px solid var(--black)",
+            borderRadius: 12,
+            boxShadow: "4px 4px 0px var(--black)",
+            padding: "16px 20px",
+            marginBottom: 24,
+            background: "var(--black)",
+            textAlign: "center",
+          }}>
+            <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 10, fontWeight: 700, color: "var(--gray-400)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+              All set! Your case number
+            </p>
+            <p style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontSize: 24, fontWeight: 700, color: "var(--white)", letterSpacing: 2 }}>
+              {caseNumber}
+            </p>
+          </div>
         )}
 
         {/* Tax Summary — only after processing completes */}
