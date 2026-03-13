@@ -92,7 +92,7 @@ export function ChatContainer() {
     if (hasInitialized.current || messages.length > 0) return;
     hasInitialized.current = true;
     botSay(
-      "Let's see if you could pay yourself tax-free rental income through your business. Quick question — do you own or rent a personal residence?",
+      "Let's see if you could pay yourself tax-free rental income through your business. Quick question — do you own a personal residence?",
       "owns_home"
     );
   }, [botSay, messages.length]);
