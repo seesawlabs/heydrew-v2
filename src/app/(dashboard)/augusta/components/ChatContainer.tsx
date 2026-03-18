@@ -28,6 +28,7 @@ import {
   calculateAugustaRate,
   estimateMarginalRate,
 } from "@/lib/tax/estimateSavings";
+import { useProfileStore } from "@/lib/stores/useProfileStore";
 
 function extractState(address: string): string {
   const stateMatch = address.match(
@@ -60,6 +61,8 @@ export function ChatContainer() {
     setIsTyping,
     setGeneratedDocs,
   } = useAugustaFlow();
+  const profilePersonal = useProfileStore((s) => s.personal);
+  const profileBusiness = useProfileStore((s) => s.business);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const hasInitialized = useRef(false);
@@ -88,14 +91,45 @@ export function ChatContainer() {
   );
 
   // Start the flow (guard against React strict mode double-mount)
+  // Skip the owns_home question — answer was collected during onboarding
   useEffect(() => {
     if (hasInitialized.current || messages.length > 0) return;
     hasInitialized.current = true;
-    botSay(
-      "Let's see if you could pay yourself tax-free rental income through your business. Quick question — do you own a personal residence?",
-      "owns_home"
-    );
-  }, [botSay, messages.length]);
+    const ownsHome = profilePersonal.ownsResidence === "Yes";
+    // Map business type to entity type for tax calculations
+    const typeMap: Record<string, string> = {
+      "S-Corporation": "s_corp",
+      "C-Corporation": "c_corp",
+      "LLC": "llc",
+      "Partnership": "partnership",
+      "Sole proprietorship": "sole_prop",
+      "Other": "other",
+    };
+    updateEngagement({
+      ownsHome,
+      entityName: profileBusiness.name || "Your Business LLC",
+      entityType: typeMap[profileBusiness.type] || "s_corp",
+      ownerName: profilePersonal.fullName || "",
+    });
+    if (ownsHome) {
+      botSay(
+        "Let's see if you could pay yourself tax-free rental income through your business. First — what's the address of your home?",
+        "address"
+      );
+    } else {
+      botSay(
+        "Let's see if you could pay yourself tax-free rental income through your business."
+      );
+      setTimeout(() => {
+        addMessage({
+          role: "bot",
+          type: "disqualification",
+          content:
+            "The Augusta Rule requires a personal residence. This strategy won't work right now, but there may be other strategies that fit your situation.",
+        });
+      }, 1600);
+    }
+  }, [botSay, messages.length, profilePersonal, profileBusiness, updateEngagement, addMessage]);
 
   // ── Stage 2 entry helper ──
   const startStage2 = useCallback(() => {

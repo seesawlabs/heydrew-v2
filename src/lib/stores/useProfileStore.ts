@@ -11,6 +11,16 @@ interface BusinessInfo {
 }
 
 interface PersonalInfo {
+  // New onboarding questions
+  expectedRevenue: string;
+  w2Employees: string;
+  maritalStatus: string;
+  kidsUnder18: string;
+  ownsResidence: string;
+  hasHealthInsurance: string;
+  age: string;
+  stateOfResidence: string;
+  // Contact info
   fullName: string;
   email: string;
   phone: string;
@@ -37,6 +47,14 @@ const defaultBusiness: BusinessInfo = {
 };
 
 const defaultPersonal: PersonalInfo = {
+  expectedRevenue: "",
+  w2Employees: "",
+  maritalStatus: "",
+  kidsUnder18: "",
+  ownsResidence: "",
+  hasHealthInsurance: "",
+  age: "",
+  stateOfResidence: "",
   fullName: "",
   email: "",
   phone: "",
